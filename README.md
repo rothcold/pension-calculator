@@ -25,7 +25,7 @@ python3 -m http.server 8080 --bind 127.0.0.1 --directory dist
 
 ## Vercel 构建注意事项
 
-仓库不再包含预编译 `dist/`，不能继续使用“跳过构建、直接发布 dist”的配置。自动部署须先通过官方 rustup 安装 Rust stable 和 `wasm32-unknown-unknown` 目标，确保构建阶段加载 Cargo 环境，再运行 `sh scripts/build-web.sh`，输出目录设为 `dist`。现有脚本只负责编译，不安装工具链。此说明不表示已经配置或部署 Vercel。
+仓库不再包含预编译 `dist/`，不能使用“跳过构建、直接发布 dist”的配置。通用 Vercel 构建配置位于 `vercel.json`，由 `scripts/vercel-build.sh` 通过官方 rustup 准备 Rust stable 和 `wasm32-unknown-unknown` 目标，再调用 `scripts/build-web.sh` 生成 `dist/`；不需要 wasm-bindgen 或 wasm-pack。该流程已经过生产构建验证。账户、项目关联及环境文件不属于源码，`.vercel/`、`.env*` 和构建产物均保持忽略。
 
 ## 本地 Rust HTTP 服务启动
 
