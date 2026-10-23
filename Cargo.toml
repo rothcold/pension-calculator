@@ -1,0 +1,17 @@
+[package]
+name = "pension-calculator"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Transparent, configurable Shanghai employee pension scenario calculator"
+
+[dependencies]
+axum = "0.8"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
+
+[profile.release]
+lto = true
+strip = true

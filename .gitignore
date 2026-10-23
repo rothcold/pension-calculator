@@ -1,0 +1,9 @@
+**/target/
+node_modules/
+.openai/
+site/
+.env
+.env.*
+*.log
+*.tar.gz
+.DS_Store

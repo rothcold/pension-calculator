@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>养老金计算器：硬币与时钟</title>
+  <rect width="64" height="64" rx="15" fill="#17382f"/>
+  <circle cx="27" cy="28" r="18" fill="#e9bd63"/>
+  <circle cx="27" cy="28" r="13" fill="none" stroke="#946b2c" stroke-width="2"/>
+  <path d="M23 20l4 6 4-6M22 27h10M22 31h10M27 26v11" fill="none" stroke="#17382f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="44" cy="43" r="15" fill="#f6f8f3" stroke="#17382f" stroke-width="3"/>
+  <path d="M44 34v9l6 4" fill="none" stroke="#237458" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
