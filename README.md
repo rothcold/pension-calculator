@@ -6,7 +6,7 @@
 
 ## 浏览器本地计算（Rust / WebAssembly）
 
-`dist/` 提供可直接托管的静态版本；养老金公式仍由同一个 `src/lib.rs` 编译为 WASM 执行，不由 JavaScript 重写。表单输入只存在浏览器内存中，不上传至计算 API，不持久化、不接第三方分析服务。
+运行构建后会生成 `dist/` 静态版本；该目录已加入 `.gitignore`，不再提交到仓库。养老金公式仍由同一个 `src/lib.rs` 编译为 WASM 执行，不由 JavaScript 重写。表单输入只存在浏览器内存中，不上传至计算 API，不持久化、不接第三方分析服务。
 
 官方安装 Rust stable 后，安装官方编译目标并构建：
 
@@ -22,6 +22,10 @@ python3 -m http.server 8080 --bind 127.0.0.1 --directory dist
 `web/index.html` 是静态前端源，`frontend/index.html` 是本地 HTTP 版源；两者交互一致，仅计算调用方式不同。图标以 `frontend/` 为源，构建时同步到 `dist/`。修改公式只改 `src/lib.rs`；WASM wrapper 通过模块路径复用核心。
 
 本仓库不包含任何托管平台账户配置、访问凭据或个人真实输入。静态文件本身不提供登录或访问控制，请按自己的托管环境配置隐私边界。
+
+## Vercel 构建注意事项
+
+仓库不再包含预编译 `dist/`，不能继续使用“跳过构建、直接发布 dist”的配置。自动部署须先通过官方 rustup 安装 Rust stable 和 `wasm32-unknown-unknown` 目标，确保构建阶段加载 Cargo 环境，再运行 `sh scripts/build-web.sh`，输出目录设为 `dist`。现有脚本只负责编译，不安装工具链。此说明不表示已经配置或部署 Vercel。
 
 ## 本地 Rust HTTP 服务启动
 
@@ -127,7 +131,7 @@ src/main.rs         # 本地 HTTP 服务
 frontend/           # HTTP 版前端及 SVG / PNG / ICO 图标
 wasm/               # 复用 src/lib.rs 的 WASM 包与锁文件
 web/index.html      # 浏览器内计算版前端源
-dist/               # 可托管静态构建
+dist/               # 构建生成的静态文件，不纳入 Git
 scripts/build-web.sh
 tests/wasm.cjs      # WASM 数值和页面脚本测试
 README.md

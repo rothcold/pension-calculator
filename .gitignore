@@ -7,3 +7,4 @@ site/
 *.log
 *.tar.gz
 .DS_Store
+/dist/
