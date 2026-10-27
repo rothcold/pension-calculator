@@ -1,0 +1,13 @@
+{
+  "name": "pension-calculator",
+  "version": "0.1.0",
+  "description": "Transparent, configurable Shanghai employee pension scenario calculator",
+  "private": true,
+  "scripts": {
+    "build": "sh scripts/build-web.sh"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  },
+  "license": "MIT"
+}

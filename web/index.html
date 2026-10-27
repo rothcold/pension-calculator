@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
 <link rel="icon" type="image/svg+xml" sizes="any" href="./favicon.svg">
 <script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
 </script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
@@ -28,7 +29,7 @@
 <details open><summary>计算口径与高级参数 <span class="fine">· 首次使用请核对</span></summary>
 <div class="grid grid-advanced">
 <div class="field"><label class="checkbox"><input id="balance_includes_current_month" name="balance_includes_current_month" type="checkbox">余额及已缴月数已含计算起始月缴费</label><small>默认勾选：次月开始新增缴费，包含退休当月，退休次月起领。取消表示两项均截至上月，避免同月重复。</small></div>
-<div class="field"><label for="employer_contribution_rate">单位养老缴费比例（%）</label><input id="employer_contribution_rate" name="employer_contribution_rate" type="number" min="0" max="100" step="0.01" required><small>默认16%，按实际缴费基数计算，非工资全额。灵活就业全部自付已填入个人成本时设0，避免重复。</small></div>
+<div class="field"><label for="employer_contribution_rate">单位养老缴费比例��%）</label><input id="employer_contribution_rate" name="employer_contribution_rate" type="number" min="0" max="100" step="0.01" required><small>默认16%，按实际缴费基数计算，非工资全额。灵活就业全部自付已填入个人成本时设0，避免重复。</small></div>
 <div class="field"><label for="past_employer_contributions">历史单位实际养老缴费总额（可选，元）</label><input id="past_employer_contributions" name="past_employer_contributions" type="number" min="0" max="1000000000" step="0.01"><small>个人与单位历史实际额都填写才按实缴数据计算；缺任一项主结果显著标明历史估算。</small></div>
 <div class="field"><label for="past_personal_contributions">历史个人实际缴费总额（可选，元）</label><input id="past_personal_contributions" name="past_personal_contributions" type="number" min="0" max="100000000" step="0.01"><small>只填实际自付本金，不含利息、单位缴费。未填只计算简化余额回收，不推算真实回本。</small></div>
 <div class="field"><label for="future_personal_monthly_cost">未来当前月自付成本（可选，元）</label><input id="future_personal_monthly_cost" name="future_personal_monthly_cost" type="number" min="0" max="1000000" step="0.01"><small>默认等于账户月入账额，仅适用普通单位职工；灵活就业需填写全部自付费用。随缴费增长假设变化。</small></div>
@@ -48,7 +49,7 @@
 <div class="field"><label for="wage_growth_rate">缴费及参考工资年增长假设（%）</label><input id="wage_growth_rate" name="wage_growth_rate" type="number" min="-10" max="20" step="0.1" required><small>同时增长未来月入账额、参考工资和缴费上下限。0% 为固定当前月入账额，不是官方预测。</small></div>
 <div class="field"><label for="pension_base_growth_rate">计发基数年增长假设（%）</label><input id="pension_base_growth_rate" name="pension_base_growth_rate" type="number" min="-10" max="20" step="0.1" required><small>设为 0% 表示维持当前基数，不预估未来工资上涨。</small></div>
 <div class="field"><label for="account_interest_rate">个人账户年记账利率假设（%）</label><input id="account_interest_rate" name="account_interest_rate" type="number" min="0" max="20" step="0.1" required><small>实际记��利率每年公布。这里仅用于情景，不代表银行或投资回报率。</small></div>
-</div><p class="fine">政策边界：上海普通职工养老保险的简化模型，不计算视同缴费��过渡性养老金、特殊工种及跨地区转移的特殊核定。2030 年起最低缴费年限逐年增加，程序按退休时点适用规则判断，不固定为 15 年。</p>
+</div><p class="fine">政策边界：上海普通职工养老保险的简化模型，不计算视同缴费、过渡性养老金、特殊工种及跨地区转移的特殊核定。2030 年起最低缴费年限逐年增加，程序按退休时点适用规则判断，不固定为 15 年。</p>
 </details>
 <div class="actions"><button id="submit" type="submit" disabled>计算退休情景 →</button><button class="secondary" id="reset" type="button">恢复演示参数</button><span id="status" role="status">正在读取 Rust 服务参数…</span></div><div id="error" class="error" role="alert" hidden></div>
 </section></form>
