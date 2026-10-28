@@ -48,8 +48,8 @@
 <div class="field"><label for="contribution_base_max">当前缴费基数上限（元/月）</label><input id="contribution_base_max" name="contribution_base_max" type="number" min="1" max="1000000" step="0.01" required><small>勾选“达到上限”时由 Rust 计算个人缴纳金额。</small></div>
 <div class="field"><label for="contribution_rate">账户入账额 / 缴费基数（%）</label><input id="contribution_rate" name="contribution_rate" type="number" min="0.1" max="100" step="0.01" required><small>普通企业职工按 8% 反推缴费基数。其他参保类型需核实，不能使用总缴费比例。</small></div>
 <div class="field"><label for="wage_growth_rate">缴费及参考工资年增长假设（%）</label><input id="wage_growth_rate" name="wage_growth_rate" type="number" min="-10" max="20" step="0.1" required><small>同时增长未来月入账额、参考工资和缴费上下限。0% 为固定当前月入账额，不是官方预测。</small></div>
-<div class="field"><label for="pension_base_growth_rate">计发基数年增长假设（%）</label><input id="pension_base_growth_rate" name="pension_base_growth_rate" type="number" min="-10" max="20" step="0.1" required><small>设为 0% 表示维持当前基数，不预估未来工资���涨。</small></div>
-<div class="field"><label for="account_interest_rate">个人账户年记账利率假设（%）</label><input id="account_interest_rate" name="account_interest_rate" type="number" min="0" max="20" step="0.1" required><small>实际记账���率每年公布。这里仅用于情景，不代表银行或投资回报率。</small></div>
+<div class="field"><label for="pension_base_growth_rate">计发基数年增长假设（%）</label><input id="pension_base_growth_rate" name="pension_base_growth_rate" type="number" min="-10" max="20" step="0.1" required><small>设为 0% 表示维持当前基数，不预估未来工资上涨。</small></div>
+<div class="field"><label for="account_interest_rate">个人账户年记账利率假设（%）</label><input id="account_interest_rate" name="account_interest_rate" type="number" min="0" max="20" step="0.1" required><small>实际记账利率每年公布。这里仅用于情景，不代表银行或投资回报率。</small></div>
 </div><p class="fine">政策边界：上海普通职工养老保险的简化模型，不计算视同缴费、过渡性养老金、特殊工种及跨地区转移的特殊核定。2030 年起最低缴费年限逐年增加，程序按退休时点适用规则判断，不固定为 15 年。</p>
 </details>
 <div class="actions"><button id="submit" type="submit" disabled>计算退休情景 →</button><button class="secondary" id="reset" type="button">恢复演示参数</button><span id="status" role="status">正在读取 Rust 服务参数…</span></div><div id="error" class="error" role="alert" hidden></div>
