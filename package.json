@@ -7,7 +7,7 @@
     "build": "sh scripts/build-web.sh"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.4.1"
+    "@vercel/analytics": "^2.0.1"
   },
   "license": "MIT"
 }
