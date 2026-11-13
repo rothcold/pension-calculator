@@ -1,12 +1,22 @@
 # 养老金计算器
 
-一个在本机浏览器中使用的职工养老保险计算器。计算逻辑与 HTTP 服务端使用 Rust，界面使用无构建依赖的 HTML / CSS / JavaScript；JavaScript 不实现养老金公式。
+面向上海普通企业职工的养老金情景估算工具。计算逻辑与 HTTP 服务端使用 Rust，界面使用无构建依赖的 HTML / CSS / JavaScript；JavaScript 不实现养老金公式。
 
-**结果是达到领取条件后的月养老金情景估算，不是当前可提取余额，也不是社保经办核定待遇。**
+正式站点：<https://pension-calculator.rothcold.me/>。
+
+结果是达到领取条件后的月养老金情景估算，不是当前可提取余额，也不是社保经办核定待遇。
+
+## 适用范围
+
+本工具仅估算上海普通企业职工的基础养老金与个人账户养老金，比较停缴、按月补足最低缴费年限和持续缴费等情景。修改基数或费率不等于支持其他地区或参保类型。
+
+不涵盖城乡居民养老保险、机关事业单位特殊规则、视同缴费年限、过渡性养老金、特殊工种、提前退休、跨地区复杂核定及其他专项待遇。灵活就业的缴费成本和领取资格须另行核对。本版不自动判定渐进式延迟退休时间或延缴资格，也不将“补足”视为允许一次性补缴。
+
+默认年龄 40 岁、账户余额 0 元、已缴 0 个月、月入账 1,000 元均为示例；退休年龄 63 岁、历史缴费指数 1、增长率与记账利率 0% 均为假设。计发基数 12,577 元仅为演示值，不是已核实的退休计发基数。请按权益记录及适用政策修改，未来规则也可能变化。
 
 ## 浏览器本地计算（Rust / WebAssembly）
 
-运行构建后会生成 `dist/` 静态版本；该目录已加入 `.gitignore`，不再提交到仓库。养老金公式仍由同一个 `src/lib.rs` 编译为 WASM 执行，不由 JavaScript 重写。表单输入只存在浏览器内存中，不上传至计算 API，不持久化、不接第三方分析服务。
+运行构建后会生成 `dist/` 静态版本；该目录已加入 `.gitignore`，不再提交到仓库。养老金公式仍由同一个 `src/lib.rs` 编译为 WASM 执行，不由 JavaScript 重写。计算代码在浏览器内处理表单输入，不调用 HTTP 计算接口，也不主动持久化输入。这不代表页面没有网络请求或第三方脚本，参见下方隐私说明。
 
 官方安装 Rust stable 后，安装官方编译目标并构建：
 
@@ -44,7 +54,16 @@ cargo run --release
 PENSION_BIND=127.0.0.1:3100 cargo run --release
 ```
 
-不要在没有认证和 HTTPS 防护的情况下绑定公网地址。默认不保存输入、不写访问日志、不加载第三方脚本、没有分析埋点及浏览器持久化；HTTP 响应使用 `no-store`。输入只发送给你启动的服务。如果自行部署到远程机器，输入将发送到那台服务器，不能再视为纯本机处理。
+不要在没有认证和 HTTPS 防护的情况下绑定公网地址。HTTP 版将表单输入以 JSON 发送到当前站点的 `/api/calculate`，由 Rust 服务计算；如果部署到远程机器，输入将发送到那台服务器，不能视为纯本机处理。仓库中的 Rust 服务不主动持久化输入、不写访问日志，HTTP 响应使用 `no-store`；这些行为不能保证托管平台或第三方脚本不处理数据。
+
+## 隐私与第三方脚本
+
+两套前端均引用 Vercel Analytics（访问统计）和 Speed Insights（性能监测）脚本，路径分别为 `/_vercel/insights/script.js` 和 `/_vercel/speed-insights/script.js`。在托管环境启用时，相关脚本可能向 Vercel 发送访问与性能数据；本地 Rust 服务和普通静态预览不提供这些端点，可能出现 404。
+
+计算代码未主动将表单字段作为统计事件发送，但这不构成对第三方脚本采集或传输行为的保证。浏览器内计算也不等于整个页面离线或没有第三方数据处理。实际数据处理受托管配置和第三方政策影响，请勿填写姓名、身份证号等身份信息。
+
+- [Vercel Analytics 隐私说明](https://vercel.com/docs/analytics/privacy-policy)
+- [Speed Insights 隐私说明](https://vercel.com/docs/speed-insights/privacy-policy)
 
 ## 输入
 
@@ -116,6 +135,8 @@ curl -H 'Content-Type: application/json' \
   http://127.0.0.1:3000/api/calculate
 ```
 
+`node tests/wasm.cjs` 会调用 `tests/site.cjs`，逐个校验两套前端及构建页面的内联脚本，并检查元数据、共享说明和 `robots.txt` / `sitemap.xml` 构建产物。构建后也可单独运行 `node tests/site.cjs`。正式域名的 canonical、Open Graph URL 和站点地图均使用 `https://pension-calculator.rothcold.me/`，本地预览地址不写入这些元数据。代理修改约定见 [AGENTS.md](AGENTS.md)。
+
 前端验收建议：检查低于最低月数显示 0、上限勾选、非法数值、距退休不足五年、非整岁退休未填计发月数显示待核定、补齐需延缴、手机窄屏等情况。运行测试和构建的实际结果应以当前环境日志为准，不因为源码附带测试就视为已经执行通过。
 
 ## 修改地区或政策
@@ -133,7 +154,10 @@ wasm/               # 复用 src/lib.rs 的 WASM 包与锁文件
 web/index.html      # 浏览器内计算版前端源
 dist/               # 构建生成的静态文件，不纳入 Git
 scripts/build-web.sh
-tests/wasm.cjs      # WASM 数值和页面脚本测试
+tests/wasm.cjs      # WASM 数值测试，并运行站点测试
+tests/site.cjs      # 内联脚本回归、两前端文本、元数据和静态构建测试
+web/robots.txt     # 爬虫规则，构建时复制到 dist/
+web/sitemap.xml    # 正式域名站点地图，构建时复制到 dist/
 README.md
 ```
 

@@ -5,6 +5,6 @@ export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$(pwd)=. --remap-path-prefi
 cargo build --locked --manifest-path wasm/Cargo.toml --target wasm32-unknown-unknown --release
 mkdir -p dist
 cp wasm/target/wasm32-unknown-unknown/release/pension_browser.wasm dist/
-cp web/index.html dist/index.html
+cp web/index.html web/robots.txt web/sitemap.xml dist/
 cp frontend/favicon.svg frontend/favicon-32.png frontend/favicon.ico dist/
 echo "Built dist/. Serve this directory over HTTP; do not open HTML as file://."
