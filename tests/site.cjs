@@ -16,8 +16,13 @@ assert.throws(()=>checkInlineScripts(fixture.replace('const second=2;','const =;
 assert.throws(()=>checkInlineScripts('<script>const shared=1;</script><script>const =;</script><script>const final=2;</script>','invalid middle'),SyntaxError);
 console.log('Inline script extraction regressions: PASS');
 
-const origin='https://pension-calculator.rothcold.me/';
+const origin='https://pension.rothcold.me/';
+const obsoleteHostname=['pension-calculator','rothcold','me'].join('.');
 const read=path=>fs.readFileSync(path,'utf8');
+for(const path of ['README.md','AGENTS.md'])assert(read(path).includes(origin),path+': correct production origin');
+for(const path of ['web/index.html','frontend/index.html','web/robots.txt','web/sitemap.xml','README.md','AGENTS.md','tests/site.cjs','dist/index.html','dist/robots.txt','dist/sitemap.xml']){
+ assert(!read(path).includes(obsoleteHostname),path+': obsolete production hostname');
+}
 const web=read('web/index.html'), http=read('frontend/index.html'), built=read('dist/index.html');
 const section=(html,id)=>{
  const match=html.match(new RegExp('<section[^>]* id="'+id+'"[^>]*>([\\s\\S]*?)</section>'));

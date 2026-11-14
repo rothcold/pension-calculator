@@ -2,7 +2,7 @@
 
 面向上海普通企业职工的养老金情景估算工具。计算逻辑与 HTTP 服务端使用 Rust，界面使用无构建依赖的 HTML / CSS / JavaScript；JavaScript 不实现养老金公式。
 
-正式站点：<https://pension-calculator.rothcold.me/>。
+正式站点：<https://pension.rothcold.me/>。
 
 结果是达到领取条件后的月养老金情景估算，不是当前可提取余额，也不是社保经办核定待遇。
 
@@ -135,7 +135,7 @@ curl -H 'Content-Type: application/json' \
   http://127.0.0.1:3000/api/calculate
 ```
 
-`node tests/wasm.cjs` 会调用 `tests/site.cjs`，逐个校验两套前端及构建页面的内联脚本，并检查元数据、共享说明和 `robots.txt` / `sitemap.xml` 构建产物。构建后也可单独运行 `node tests/site.cjs`。正式域名的 canonical、Open Graph URL 和站点地图均使用 `https://pension-calculator.rothcold.me/`，本地预览地址不写入这些元数据。代理修改约定见 [AGENTS.md](AGENTS.md)。
+`node tests/wasm.cjs` 会调用 `tests/site.cjs`，逐个校验两套前端及构建页面的内联脚本，并检查元数据、共享说明和 `robots.txt` / `sitemap.xml` 构建产物。构建后也可单独运行 `node tests/site.cjs`。正式域名的 canonical、Open Graph URL 和站点地图均使用 `https://pension.rothcold.me/`，本地预览地址不写入这些元数据。代理修改约定见 [AGENTS.md](AGENTS.md)。
 
 前端验收建议：检查低于最低月数显示 0、上限勾选、非法数值、距退休不足五年、非整岁退休未填计发月数显示待核定、补齐需延缴、手机窄屏等情况。运行测试和构建的实际结果应以当前环境日志为准，不因为源码附带测试就视为已经执行通过。
 
