@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light"><title>计算方法、示例与政策来源｜上海养老金计算器</title>
+<meta name="description" content="上海普通企业职工养老金情景估算的计算公式、变量口径、手工复算示例、政策来源与模型边界。无需 JavaScript 即可阅读。">
+<link rel="canonical" href="https://pension.rothcold.me/methodology/">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="上海养老金计算器">
+<meta property="og:title" content="计算方法、示例与政策来源｜上海养老金计算器">
+<meta property="og:description" content="上海普通企业职工养老金情景估算的计算公式、变量口径、手工复算示例、政策来源与模型边界。无需 JavaScript 即可阅读。">
+<meta property="og:url" content="https://pension.rothcold.me/methodology/">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg">
+<style>
+:root{--ink:#17382f;--muted:#63766e;--line:#dce5de;--paper:#f6f8f3;--accent:#237458;--soft:#e7f1e9;--warn:#85602b}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.75}.wrap{max-width:960px;margin:auto;padding:45px 28px 64px}.eyebrow{font-size:12px;letter-spacing:.16em;font-weight:750;color:var(--accent)}header{margin-bottom:25px}h1{font-size:38px;letter-spacing:-1.5px;line-height:1.3;margin:9px 0 12px}h2{font-size:22px;margin:0 0 15px}h3{font-size:17px;margin:24px 0 9px}p{margin:0 0 12px}.subtitle,.muted{color:var(--muted)}a{color:var(--accent);text-underline-offset:3px}.nav{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}.nav a{font-size:13px;font-weight:700}.notice{border-left:3px solid #c6a269;background:#f7f0e3;padding:13px 17px;color:#6d5634;border-radius:0 9px 9px 0;margin-bottom:23px}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:26px;margin-bottom:23px;box-shadow:0 3px 15px #18392a03}.formula{background:#f7f9f5;border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin:11px 0;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;overflow-wrap:anywhere}.formula strong{font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:12px;padding:17px;background:#fcfdfb}.card h3{margin:0 0 8px}.example{border-left:3px solid #9fc2b5;padding-left:17px;margin:22px 0}.example h3{margin-top:0}.example ol{margin:7px 0;padding-left:22px}.example .result{font-weight:750;color:var(--accent)}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:var(--muted);font-weight:650;background:#f7f9f5}th,td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}ul{padding-left:21px;margin:8px 0}li{margin:6px 0}.table-wrap{overflow:auto}.source-title{min-width:180px}.fine{font-size:12px;color:var(--muted)}footer{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:24px;margin-top:28px}footer p{max-width:620px}@media(max-width:680px){.wrap{padding:28px 17px 48px}h1{font-size:29px}.panel{padding:19px}.grid{grid-template-columns:1fr}.table-wrap{overflow:visible}table,tbody,tr,td{display:block}thead{display:none}tr{border:1px solid var(--line);border-radius:10px;margin:0 0 13px;padding:10px 12px;background:#fcfdfb}td{border:0;padding:5px 0;min-width:0}td::before{content:attr(data-label) "：";font-weight:700;color:var(--muted)}.source-title{min-width:0}footer{display:block}}@media print{body{background:#fff}.wrap{padding:0;max-width:none}.panel{border:0;box-shadow:none;padding:13px 0}.nav,footer{display:none}.table-wrap{overflow:visible}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body><main class="wrap">
+<header><div class="eyebrow">METHOD / SOURCES / EXAMPLES</div><h1>计算方法、示例与政策来源</h1><p class="subtitle">这是一页无需 JavaScript 即可阅读的静态说明，记录当前代码实际使用的公式、可修改参数和政策边界。内容核验日期：2026-11-14。</p><nav class="nav" aria-label="页面导航"><a href="/">返回计算器</a><a href="#examples">手工复算示例</a><a href="#sources">政策来源</a><a href="https://github.com/rothcold/pension-calculator/issues">维护与反馈</a></nav></header>
+<div class="notice"><strong>先看结论：</strong>结果是条件性情景估算，不是社保经办机构的待遇认定，也不证明领取资格。遇到视同缴费、过渡性养老金、特殊工种、跨地区关系转移、灵活就业或非整周岁计发月数等情况，应以经办核定为准。</div>
+
+<section class="panel" id="formula" aria-labelledby="formula-title"><h2 id="formula-title">当前实现的两项养老金公式</h2>
+<p>计算器只估算上海普通企业职工模型中的<strong>基础养老金</strong>和<strong>个人账户养老金</strong>。JavaScript 只负责表单与展示；数值由同一份 Rust 核心计算，静态站编译为 WebAssembly。</p>
+<div class="formula"><strong>基础养老金</strong> = 向上进位到角〔B × (1 + I) ÷ 2 × Y × 1%〕</div>
+<ul>
+<li><strong>B（退休时计发基数）</strong>：当前填写的养老金计发基数 × (1 + 计发基数年增长假设)<sup>距领取时点月数 ÷ 12</sup>。</li>
+<li><strong>I（综合平均缴费指数）</strong>：〔历史平均缴费指数 × 历史实缴月数 + 各未来实缴月的缴费指数之和〕÷ 总实缴月数。未来每月指数先保留 4 位小数；停缴月不进入分母。</li>
+<li><strong>Y（缴费年限）</strong>：总实缴月数 ÷ 12，计算时保留 4 位小数。</li>
+</ul>
+<div class="formula"><strong>个人账户养老金</strong> = 向上进位到角〔A ÷ P〕</div>
+<ul>
+<li><strong>A（退休时预测账户储存额）</strong>：当前个人账户余额，加未来账户入账本金及按所填记账利率模拟的利息。该利息算法是情景简化，不是经办机构的历史记账复算。</li>
+<li><strong>P（个人账户计发月数）</strong>：整周岁退休时使用代码中的国家计发月数表；例如 60 岁为 139、63 岁为 117、70 岁为 56。非整周岁或延缴等情况若没有手动填写核定值，待遇显示“待核定”。</li>
+</ul>
+<p>页面“合计”是上述两项相加后保留到分。分别见分进角、总额保留到分的顺序与当前 Rust 实现一致。程序还会先判断最低缴费月数：不足时月领明确显示 0；资格或关键计发参数不确定时显示“待核定”，两者含义不同。</p></section>
+
+<section class="panel" id="variables" aria-labelledby="variables-title"><h2 id="variables-title">哪些是政策值、输入、演示值和未来假设</h2>
+<div class="grid">
+<article class="card"><h3>政策口径写入模型</h3><p>2030 年前最低 180 个月；2030 年起每年增加 6 个月，2039 年达到 240 个月。整周岁计发月数表、缴费年限保留 4 位小数和养老金分别见分进角也由代码处理。</p></article>
+<article class="card"><h3>用户输入或经办核定值</h3><p>当前年龄、个人账户余额、累计实缴月数、账户月入账额、出生和退休年月、历史平均指数，以及可选的法定退休年月、最低缴费月数和计发月数核定值。</p></article>
+<article class="card"><h3>演示参数，可修改</h3><p>40 岁、余额 0 元、已缴 0 个月、月入账 1,000 元只是空白示例；63 岁、历史指数 1、个人入账比例 8% 和单位费率 16% 也应按本人适用口径核对。<strong>12,577 元是演示值，不是已核实的当前官方养老金计发基数。</strong></p></article>
+<article class="card"><h3>未来情景假设</h3><p>未来账户入账及参考工资增长率、养老金计发基数增长率、个人账户记账利率均由用户设定。初始 0% 只表示静态比较，不是官方预测；把现有规则延伸到未来领取年份同样不是政策承诺。</p></article>
+</div>
+<h3>弹性退休与最低缴费年限</h3><p>填写法定退休年月后，当前实现取“所选退休年份”和“法定退休年龄年份”中较早的一年：弹性提前退休对应所选退休年份的最低年限，弹性延迟退休对应法定退休年龄年份的最低年限；没有填写法定时点时，只按所选退休年份作条件性估算。经办核定的最低月数手动值优先。</p>
+<p>“继续按月缴至最低月数”只模拟逐月继续缴费，不把数学上补足的日期当作领取资格，也不表示本人一定符合一次性缴费或延长缴费条件。</p></section>
+
+<section class="panel" id="examples" aria-labelledby="examples-title"><h2 id="examples-title">可手工复算的具体示例</h2>
+<p>以下全部采用当前实现的进位顺序。示例中的 12,577 元只为方便复算，并非当前官方计发基数。</p>
+<article class="example"><h3>示例 1：已缴 240 个月，现在停缴</h3>
+<p>假设退休时计发基数 B = 12,577，综合指数 I = 1，实缴 240 个月，账户储存额 A = 100,000，63 岁计发月数 P = 117，未来增长和利率均为 0。</p>
+<ol><li>Y = 240 ÷ 12 = 20 年。</li><li>基础养老金 = 12,577 × (1 + 1) ÷ 2 × 20 × 1% = 2,515.40，进角仍为 2,515.40 元。</li><li>个人账户养老金 = 100,000 ÷ 117 = 854.7008…，进角为 854.80 元。</li></ol>
+<p class="result">合计：2,515.40 + 854.80 = 3,370.20 元/月。</p></article>
+<article class="example"><h3>示例 2：多 1 个实缴月，检验四位小数与进角</h3>
+<p>沿用示例 1，但总实缴月数改为 241，其他值不变。</p>
+<ol><li>Y = 241 ÷ 12 = 20.083333…，代码保留 4 位小数为 20.0833。</li><li>基础养老金 = 12,577 × (1 + 1) ÷ 2 × 20.0833 × 1% = 2,525.876…，进角为 2,525.90 元。</li><li>个人账户养老金仍为 854.80 元。</li></ol>
+<p class="result">合计：2,525.90 + 854.80 = 3,380.70 元/月。</p></article>
+<article class="example"><h3>示例 3：2030 年最低缴费月数</h3>
+<p>假设所选退休年份为 2030，且不涉及延迟退休锁定更早法定年份，也没有手动核定值。模型要求 180 + 6 = 186 个月（15 年 6 个月）。若当前只有 180 个月并选择停缴：</p>
+<p class="result">缺口为 6 个月，当前情景月领显示 0；账户余额不会因此归零。达到门槛与最终领取资格仍须经办核定。</p></article>
+<p class="fine">这些数值同时写入 Rust/WASM 与站点回归检查，防止说明页和实现悄然不一致。</p></section>
+
+<section class="panel" id="boundaries" aria-labelledby="boundaries-title"><h2 id="boundaries-title">回本、总缴费与时间边界</h2>
+<h3>三种“回收/回本”不是同一件事</h3>
+<ul>
+<li><strong>简化余额回收</strong>以当前含历史利息的账户余额 + 未来入账本金为比较额，不把未来模拟利息算作投入，也不是实际自付成本。</li>
+<li><strong>自付缴费回本</strong>只有填写历史个人实际缴费后才提供；未来个人成本未填时默认等于账户月入账额，只适用于普通单位职工。</li>
+<li><strong>个人＋单位总缴费回本</strong>把历史与未来的个人、单位缴费相加；历史缺值时会用余额及当前费率代理并显著标为“历史估算”。单位缴费是总用工成本，不保证可一比一转化为现金工资。</li>
+</ul>
+<p>三者都以退休初始月养老金静态累计，并把覆盖成本的领取期数向上取整。它们忽略退休后待遇调整、折现、机会成本和身故待遇，不是投资收益率、寿命预测或精确到账日。</p>
+<h3>当前月与退休月</h3>
+<p>默认勾选时，余额和已缴月数被视为已经包含计算起始月，未来缴费从次月开始且包含退休当月；取消勾选则两项截至上月，未来从起始月开始。模型假设退休当月正常缴费、审核通过后次月起领，计发月数仍按退休当月年龄。实际办理和补发时间以经办结果为准。</p></section>
+
+<section class="panel" id="sources" aria-labelledby="sources-title"><h2 id="sources-title">政策正文与适用范围</h2>
+<p>链接指向具体正文，不以政府首页代替依据。核验日期统一为 2026-11-14。</p>
+<div class="table-wrap"><table><thead><tr><th class="source-title">来源</th><th>本页使用的范围</th><th>发布 / 生效</th><th>核验</th></tr></thead><tbody>
+<tr><td data-label="来源"><a href="https://rsj.sh.gov.cn/tshbx_17729/20260813/t0035_1443100.html">上海市企业基本养老金计发办法（沪人社规〔2026〕16号）</a></td><td data-label="本页使用的范围">上海企业职工基础养老金、个人账户养老金、缴费年限精度与分别见分进角；文件另含本模型未覆盖的视同缴费、过渡性养老金等。</td><td data-label="发布 / 生效">2026-07-24 发布；2026-08-16 生效，有效至 2031-08-15</td><td data-label="核验">2026-11-14</td></tr>
+<tr><td data-label="来源"><a href="https://legalinfo.moj.gov.cn/zhfxfzzx/fzzxyw/202409/t20240913_506025.html">全国人大常委会决定及《国务院关于渐进式延迟法定退休年龄的办法》</a></td><td data-label="本页使用的范围">全国渐进式退休年龄与最低缴费年限。办法第二条：2030 年起最低年限每年增加 6 个月，逐步从 15 年提高至 20 年。</td><td data-label="发布 / 生效">2024-09-13 发布；2025-01-01 实施</td><td data-label="核验">2026-11-14</td></tr>
+<tr><td data-label="来源"><a href="https://chinajob.mohrss.gov.cn/h5/c/2025-01-02/421886.shtml">三部门有关司局负责人就弹性退休办法答记者问</a></td><td data-label="本页使用的范围">弹性提前退休按所选退休年份的最低缴费年限；弹性延迟退休按法定退休年龄年份的最低缴费年限。并说明审核通过的退休时间次月开始领取。</td><td data-label="发布 / 生效">2025-01-02 发布</td><td data-label="核验">2026-11-14</td></tr>
+<tr><td data-label="来源"><a href="https://rsj.sh.gov.cn/tdjjf_17554/20210819/t0035_1401894.html">上海人社：退休当月还需要缴纳社保费吗？</a></td><td data-label="本页使用的范围">上海单位职工退休当月仍需缴纳社保费，用于当前时间边界假设。</td><td data-label="发布 / 生效">2021-08-02 发布</td><td data-label="核验">2026-11-14</td></tr>
+<tr><td data-label="来源"><a href="https://rsj.sh.gov.cn/tmsztc_17502/20231108/t0035_1419398.html">上海人社：什么时候办退休手续？</a></td><td data-label="本页使用的范围">到龄当月办理、仍需缴费，审核通过次月停缴；用于当前时间边界假设。</td><td data-label="发布 / 生效">2023-10-17 发布</td><td data-label="核验">2026-11-14</td></tr>
+</tbody></table></div>
+<p class="fine">政策与数据会更新。若链接失效、口径变更或示例与结果不一致，请在 <a href="https://github.com/rothcold/pension-calculator/issues">GitHub Issues</a> 反馈，并附适用地区、参保类型、政策正文与发布日期；不要提交身份证号、完整权益记录等个人敏感信息。</p></section>
+
+<footer><p>本说明页不依赖 JavaScript。计算器主页面需要 JavaScript 和 WebAssembly 才能生成结果；关闭 JavaScript 时仍可阅读这里的公式、示例和来源。</p><p><a href="/">返回计算器</a> · <a href="https://github.com/rothcold/pension-calculator">查看源码</a> · <a href="https://github.com/rothcold/pension-calculator/issues">维护与反馈</a></p></footer>
+</main></body></html>

@@ -11,6 +11,10 @@ async fn index() -> impl IntoResponse {
     Html(include_str!("../frontend/index.html"))
 }
 
+async fn methodology() -> impl IntoResponse {
+    Html(include_str!("../web/methodology/index.html"))
+}
+
 async fn defaults() -> Json<Input> {
     Json(Input::default())
 }
@@ -30,6 +34,8 @@ async fn compute(Json(input): Json<Input>) -> Response {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .route("/", get(index))
+        .route("/methodology", get(methodology))
+        .route("/methodology/", get(methodology))
         .route(
             "/favicon.svg",
             get(|| async {

@@ -25,13 +25,14 @@
 </style>
 </head>
 <body><main class="wrap">
-<header><div><div class="eyebrow">RETIREMENT / SCENARIO PLANNER</div><h1>上海养老金计算器</h1><p class="subtitle">面向上海普通企业职工，比较停缴、按月补足最低缴费年限和持续缴费，对退休后每月养老金的影响。</p><p><a class="source-link" href="#scope">适用范围与示例假设</a> · <a class="source-link" href="#privacy">计算方式与隐私说明</a></p><a class="source-link" href="https://github.com/rothcold/pension-calculator" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看养老金计算器源码（新窗口打开）">GitHub · 查看源码 <span aria-hidden="true">↗</span></a></div><span class="badge">Rust 计算内核 · HTTP 服务</span></header>
+<header><div><div class="eyebrow">RETIREMENT / SCENARIO PLANNER</div><h1>上海养老金计算器</h1><p class="subtitle">面向上海普通企业职工，比较停缴、按月补足最低缴费年限和持续缴费，对退休后每月养老金的影响。</p><p><a class="source-link" href="#scope">适用范围与示例假设</a> · <a class="source-link" href="/methodology/">公式、复算示例与政策来源</a> · <a class="source-link" href="#privacy">计算方式与隐私说明</a></p><a class="source-link" href="https://github.com/rothcold/pension-calculator" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看养老金计算器源码（新窗口打开）">GitHub · 查看源码 <span aria-hidden="true">↗</span></a></div><span class="badge">Rust 计算内核 · HTTP 服务</span></header>
 <div class="notice">结果均为达到领取条件后的月养老金情景估算，不是现在可以提取的金额，也不是社保经办核定待遇；未达到最低缴费月数的情景显示为 0。</div>
+<noscript><style>#calculator,#results{display:none}</style><div class="notice"><strong>JavaScript 已停用：</strong>下方计算器因此没有启动，并非 WebAssembly 仍在加载。启用 JavaScript 后可计算；<a href="/methodology/">公式、政策来源和手工复算示例</a>无需 JavaScript 即可阅读。</div></noscript>
 <section class="panel" id="scope" aria-labelledby="scope-title"><h2 id="scope-title">适用范围与示例假设</h2>
 <p>本工具采用上海普通企业职工养老保险的简化模型，仅估算基础养老金与个人账户养老金。修改基数或费率不等于支持其他地区或参保类型。</p>
 <p>不涵盖城乡居民养老保险、机关事业单位特殊规则、视同缴费年限、过渡性养老金、特殊工种、提前退休、跨地区复杂核定及其他专项待遇；灵活就业的缴费成本和领取资格也须另行核对。本版不自动判定渐进式延迟退休时间或延缴资格。</p>
 <p>默认年龄 40 岁、账户余额 0 元、已缴 0 个月、月入账 1,000 元均为示例；退休年龄 63 岁、历史缴费指数 1、增长率与记账利率 0% 均为假设。计发基数 12,577 元仅为演示值，不是已核实的退休计发基数。请按权益记录及适用政策修改，未来规则也可能变化。</p>
-<p><a class="source-link" href="https://github.com/rothcold/pension-calculator/blob/main/README.md">阅读模型、公式与政策参考（README）</a></p></section>
+<p><a class="source-link" href="/methodology/">阅读公式、复算示例、政策正文与模型边界</a> · <a class="source-link" href="https://github.com/rothcold/pension-calculator/blob/main/README.md">查看 README</a></p></section>
 <form id="calculator"><section class="panel"><div class="section-top"><h2>01 / 你的缴费情况</h2><span class="step">4 项基础信息 + 可调整假设</span></div>
 <div class="grid">
 <div class="field"><label for="current_age">当前年龄</label><div class="input-unit"><input id="current_age" name="current_age" type="number" min="16" max="70" step="1" required><span class="unit">岁</span></div><small>整数周岁；可在高级参数填写出生年月。</small></div>
@@ -75,7 +76,7 @@
 <p>HTTP 版将表单输入以 JSON 发送到当前站点的 /api/calculate，由 Rust 服务计算；默认地址为本机 127.0.0.1，部署到远程时输入会发送到远程服务器。计算代码不主动持久化输入；托管平台及第三方脚本的数据处理另受其配置和政策影响。</p>
 <p>两套前端均引用 Vercel Analytics（访问统计）和 Speed Insights（性能监测）脚本。在托管环境启用时，相关脚本可能向 Vercel 发送访问与性能数据。计算代码未主动将表单字段作为统计事件发送，但这不构成对第三方脚本采集或传输行为的保证。请勿填写姓名、身份证号等身份信息。</p>
 <p><a class="source-link" href="https://vercel.com/docs/analytics/privacy-policy">Vercel Analytics 隐私说明</a> · <a class="source-link" href="https://vercel.com/docs/speed-insights/privacy-policy">Speed Insights 隐私说明</a></p></section>
-<footer class="foot"><p>“补足”表示继续按月缴费，不表示政策允许一次性补缴。<br><a href="#scope">适用范围</a> · <a href="#privacy">隐私说明</a></p><p><a href="https://www.shanghai.gov.cn/gwk/search/content/t0035_1443100" target="_blank" rel="noopener noreferrer">上海养老金计发规定</a> · <a href="https://www.gov.cn/" target="_blank" rel="noopener noreferrer">退休政策以官方规定为准</a><br><a href="https://github.com/rothcold/pension-calculator/blob/main/README.md">模型与公式说明（README）</a></p></footer>
+<footer class="foot"><p>“补足”表示继续按月缴费，不表示本人符合一次性补缴条件。政策与来源核验于 2026-11-14。<br><a href="#scope">适用范围</a> · <a href="/methodology/">公式、示例与全部来源</a> · <a href="#privacy">隐私说明</a></p><p><a href="https://rsj.sh.gov.cn/tshbx_17729/20260813/t0035_1443100.html" target="_blank" rel="noopener noreferrer">上海企业养老金计发办法</a> · <a href="https://legalinfo.moj.gov.cn/zhfxfzzx/fzzxyw/202409/t20240913_506025.html" target="_blank" rel="noopener noreferrer">延迟退休决定及国务院办法</a> · <a href="https://chinajob.mohrss.gov.cn/h5/c/2025-01-02/421886.shtml" target="_blank" rel="noopener noreferrer">弹性退休口径</a><br><a href="https://github.com/rothcold/pension-calculator/issues">维护与反馈</a> · <a href="https://github.com/rothcold/pension-calculator/blob/main/README.md">README</a></p></footer>
 </main>
 <script>
 'use strict';

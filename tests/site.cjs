@@ -20,10 +20,11 @@ const origin='https://pension.rothcold.me/';
 const obsoleteHostname=['pension-calculator','rothcold','me'].join('.');
 const read=path=>fs.readFileSync(path,'utf8');
 for(const path of ['README.md','AGENTS.md'])assert(read(path).includes(origin),path+': correct production origin');
-for(const path of ['web/index.html','frontend/index.html','web/robots.txt','web/sitemap.xml','README.md','AGENTS.md','tests/site.cjs','dist/index.html','dist/robots.txt','dist/sitemap.xml']){
+for(const path of ['web/index.html','frontend/index.html','web/methodology/index.html','web/robots.txt','web/sitemap.xml','README.md','AGENTS.md','tests/site.cjs','dist/index.html','dist/methodology/index.html','dist/robots.txt','dist/sitemap.xml']){
  assert(!read(path).includes(obsoleteHostname),path+': obsolete production hostname');
 }
 const web=read('web/index.html'), http=read('frontend/index.html'), built=read('dist/index.html');
+const methodology=read('web/methodology/index.html'), builtMethodology=read('dist/methodology/index.html');
 const section=(html,id)=>{
  const match=html.match(new RegExp('<section[^>]* id="'+id+'"[^>]*>([\\s\\S]*?)</section>'));
  assert(match,'Missing static section: '+id);
@@ -54,11 +55,38 @@ for(const [path,html] of [['web/index.html',web],['frontend/index.html',http],['
  for(const text of ['上海普通企业职工','城乡居民','机关事业单位','视同缴费','过渡性养老金','特殊工种','提前退休','跨地区','40 岁','1,000 元','63 岁','12,577 元','示例','假设'])assert(scope.includes(text),path+': '+text);
  for(const text of ['Vercel Analytics','Speed Insights','访问与性能数据','不构成对第三方脚本采集或传输行为的保证'])assert(privacy.includes(text),path+': '+text);
  for(const id of ['scope','privacy'])assert(html.includes('href="#'+id+'"'));
+ assert(html.includes('href="/methodology/"'),path+': visible same-origin methodology link');
+ assert(html.includes('<noscript>')&&html.includes('并非 WebAssembly 仍在加载'),path+': explicit no-JavaScript state');
+ assert(html.includes('#calculator,#results{display:none}'),path+': hide inactive calculator without JavaScript');
  assert(scope.includes('href="https://github.com/rothcold/pension-calculator/blob/main/README.md"'));
  for(const service of ['analytics','speed-insights'])assert(privacy.includes('href="https://vercel.com/docs/'+service+'/privacy-policy"'));
  for(const script of ['insights','speed-insights'])assert(head.includes('src="/_vercel/'+script+'/script.js"'));
  assert(!/无第三方脚本|不加载第三方脚本|无埋点|没有分析埋点|不接第三方分析服务|不会保存或上传至第三方|账户输入不上传/.test(html));
 }
+assert.equal(checkInlineScripts(methodology,'web/methodology/index.html'),0,'Methodology must not require JavaScript');
+assert(!methodology.includes('<script'), 'Methodology contains no scripts');
+assert(methodology.includes('<link rel="canonical" href="'+origin+'methodology/">'));
+for(const text of [
+ '基础养老金','个人账户养老金','保留 4 位小数','向上进位到角',
+ '政策口径写入模型','用户输入或经办核定值','演示参数，可修改','未来情景假设',
+ '12,577 元是演示值，不是已核实的当前官方养老金计发基数',
+ '3,370.20 元/月','3,380.70 元/月','缺口为 6 个月',
+ '简化余额回收','自付缴费回本','个人＋单位总缴费回本',
+ '2026-11-14','维护与反馈'
+])assert(methodology.includes(text),'Methodology: '+text);
+for(const url of [
+ 'https://rsj.sh.gov.cn/tshbx_17729/20260813/t0035_1443100.html',
+ 'https://legalinfo.moj.gov.cn/zhfxfzzx/fzzxyw/202409/t20240913_506025.html',
+ 'https://chinajob.mohrss.gov.cn/h5/c/2025-01-02/421886.shtml',
+ 'https://rsj.sh.gov.cn/tdjjf_17554/20210819/t0035_1401894.html',
+ 'https://rsj.sh.gov.cn/tmsztc_17502/20231108/t0035_1419398.html',
+ 'https://github.com/rothcold/pension-calculator/issues'
+])assert(methodology.includes('href="'+url+'"'),'Methodology source: '+url);
+for(const text of ['2024-09-13 发布；2025-01-01 实施','2030 年起最低年限每年增加 6 个月','弹性提前退休按所选退休年份','弹性延迟退休按法定退休年龄年份'])assert(methodology.includes(text));
+assert(!methodology.includes('https://www.gov.cn/'),'Do not use a generic government homepage as a source');
+assert.equal(builtMethodology,methodology,'Build must copy the current methodology page');
+const server=read('src/main.rs');
+assert(server.includes('.route("/methodology/", get(methodology))'),'HTTP server exposes methodology route');
 assert.equal(section(web,'scope'),section(http,'scope'));
 assert(section(web,'privacy').includes('浏览器内的 Rust / WebAssembly'));
 assert(section(http,'privacy').includes('当前站点的 /api/calculate'));
@@ -75,7 +103,7 @@ for(const file of ['robots.txt','sitemap.xml'])assert.equal(read('dist/'+file),r
 assert.equal(read('dist/robots.txt'),'User-agent: *\nAllow: /\n\nSitemap: '+origin+'sitemap.xml\n');
 const sitemap=read('dist/sitemap.xml');
 assert(sitemap.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'));
-assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]),[origin]);
+assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]),[origin,origin+'methodology/']);
 for(const file of ['favicon.svg','favicon-32.png','favicon.ico'])assert(fs.readFileSync('dist/'+file).equals(fs.readFileSync('frontend/'+file)));
 const readme=read('README.md');
 for(const text of ['Vercel Analytics','Speed Insights','/api/calculate','浏览器内','不构成对第三方脚本采集或传输行为的保证'])assert(readme.includes(text));
