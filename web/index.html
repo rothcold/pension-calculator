@@ -2,7 +2,15 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light"><title>养老金计算器</title>
+<meta name="color-scheme" content="light"><title>上海养老金计算器｜普通企业职工情景估算</title>
+<meta name="description" content="面向上海普通企业职工，比较停缴、按月补足最低缴费年限和持续缴费的月养老金情景。默认参数仅为示例，结果不替代社保经办核定，不适用于所有地区或参保类型。">
+<link rel="canonical" href="https://pension-calculator.rothcold.me/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="上海养老金计算器">
+<meta property="og:title" content="上海养老金计算器｜普通企业职工情景估算">
+<meta property="og:description" content="面向上海普通企业职工，比较停缴、按月补足最低缴费年限和持续缴费的月养老金情景。默认参数仅为示例，结果不替代社保经办核定，不适用于所有地区或参保类型。">
+<meta property="og:url" content="https://pension-calculator.rothcold.me/">
 <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
 <link rel="icon" type="image/svg+xml" sizes="any" href="./favicon.svg">
@@ -17,8 +25,13 @@
 </style>
 </head>
 <body><main class="wrap">
-<header><div><div class="eyebrow">RETIREMENT / SCENARIO PLANNER</div><h1>养老金计算器</h1><p class="subtitle">职工养老保险情景计算器。比较停缴、补足最低年限和持续缴费，对退休后每月养老金的影响。</p><a class="source-link" href="https://github.com/rothcold/pension-calculator" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看养老金计算器源码（新窗口打开）">GitHub · 查看源码 <span aria-hidden="true">↗</span></a></div><span class="badge">Rust / WebAssembly · 浏览器内计算</span></header>
-<div class="notice">结果均为达到领取条件后的月养老金估算，不是现在可以提取的金额；未达到最低缴费月数的情景显示为 0。</div>
+<header><div><div class="eyebrow">RETIREMENT / SCENARIO PLANNER</div><h1>上海养老金计算器</h1><p class="subtitle">面向上海普通企业职工，比较停缴、按月补足最低缴费年限和持续缴费，对退休后每月养老金的影响。</p><p><a class="source-link" href="#scope">适用范围与示例假设</a> · <a class="source-link" href="#privacy">计算方式与隐私说明</a></p><a class="source-link" href="https://github.com/rothcold/pension-calculator" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看养老金计算器源码（新窗口打开）">GitHub · 查看源码 <span aria-hidden="true">↗</span></a></div><span class="badge">Rust / WebAssembly · 浏览器内计算</span></header>
+<div class="notice">结果均为达到领取条件后的月养老金情景估算，不是现在可以提取的金额，也不是社保经办核定待遇；未达到最低缴费月数的情景显示为 0。</div>
+<section class="panel" id="scope" aria-labelledby="scope-title"><h2 id="scope-title">适用范围与示例假设</h2>
+<p>本工具采用上海普通企业职工养老保险的简化模型，仅估算基础养老金与个人账户养老金。修改基数或费率不等于支持其他地区或参保类型。</p>
+<p>不涵盖城乡居民养老保险、机关事业单位特殊规则、视同缴费年限、过渡性养老金、特殊工种、提前退休、跨地区复杂核定及其他专项待遇；灵活就业的缴费成本和领取资格也须另行核对。本版不自动判定渐进式延迟退休时间或延缴资格。</p>
+<p>默认年龄 40 岁、账户余额 0 元、已缴 0 个月、月入账 1,000 元均为示例；退休年龄 63 岁、历史缴费指数 1、增长率与记账利率 0% 均为假设。计发基数 12,577 元仅为演示值，不是已核实的退休计发基数。请按权益记录及适用政策修改，未来规则也可能变化。</p>
+<p><a class="source-link" href="https://github.com/rothcold/pension-calculator/blob/main/README.md">阅读模型、公式与政策参考（README）</a></p></section>
 <form id="calculator"><section class="panel"><div class="section-top"><h2>01 / 你的缴费情况</h2><span class="step">4 项基础信息 + 可调整假设</span></div>
 <div class="grid">
 <div class="field"><label for="current_age">当前年龄</label><div class="input-unit"><input id="current_age" name="current_age" type="number" min="16" max="70" step="1" required><span class="unit">岁</span></div><small>整数周岁；可在高级参数填写出生年月。</small></div>
@@ -52,13 +65,17 @@
 <div class="field"><label for="account_interest_rate">个人账户年记账利率假设（%）</label><input id="account_interest_rate" name="account_interest_rate" type="number" min="0" max="20" step="0.1" required><small>实际记账利率每年公布。这里仅用于情景，不代表银行或投资回报率。</small></div>
 </div><p class="fine">政策边界：上海普通职工养老保险的简化模型，不计算视同缴费、过渡性养老金、特殊工种及跨地区转移的特殊核定。2030 年起最低缴费年限逐年增加，程序按退休时点适用规则判断，不固定为 15 年。</p>
 </details>
-<div class="actions"><button id="submit" type="submit" disabled>计算退休情景 →</button><button class="secondary" id="reset" type="button">恢复演示参数</button><span id="status" role="status">正在读取 Rust 服务参数…</span></div><div id="error" class="error" role="alert" hidden></div>
+<div class="actions"><button id="submit" type="submit" disabled>计算退休情景 →</button><button class="secondary" id="reset" type="button">恢复演示参数</button><span id="status" role="status">正在加载 Rust WebAssembly 参数…</span></div><div id="error" class="error" role="alert" hidden></div>
 </section></form>
 <section class="panel" id="results" aria-live="polite"><div class="section-top"><h2>02 / 退休后的月收入</h2><span class="step">条件性估算 · 非待遇核定</span></div>
-<div id="empty" class="empty"><svg width="43" height="43" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M6 31h28M11 26V17m9 9V9m9 17V13" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><strong>先看选择，再看差距。</strong>填写参数后，比较不同缴费路径。不会保存或上传至第三方。</div>
+<div id="empty" class="empty"><svg width="43" height="43" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M6 31h28M11 26V17m9 9V9m9 17V13" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><strong>先看选择，再看差距。</strong>填写参数后，比较不同缴费路径。请先阅读适用范围与隐私说明。</div>
 <div id="filled" hidden><div id="stale" class="notice" hidden>输入已改变，下方仍是上一次结果。请重新计算。</div><p id="result-summary" class="summary"></p><div id="cards" class="cards"></div><div id="table-wrap" class="table-wrap"></div><div class="result-notes"><strong>假设、限制与计算说明</strong><ul id="notes"></ul></div></div>
 </section>
-<footer class="foot"><p>计算在你的浏览器内执行。账户输入不上传、不保存，无第三方脚本及埋点。<br>“补足”表示继续按月缴费，不表示政策允许一次性补缴。</p><p><a href="https://www.shanghai.gov.cn/gwk/search/content/t0035_1443100" target="_blank" rel="noopener noreferrer">上海养老金计发规定</a> · <a href="https://www.gov.cn/" target="_blank" rel="noopener noreferrer">退休政策以官方规定为准</a><br>模型与公式详见随附 README。</p></footer>
+<section class="panel" id="privacy" aria-labelledby="privacy-title"><h2 id="privacy-title">计算方式与隐私说明</h2>
+<p>WASM 版将表单输入交给浏览器内的 Rust / WebAssembly 计算，不调用 HTTP 计算接口。计算代码不主动持久化输入；托管平台及第三方脚本的数据处理另受其配置和政策影响。</p>
+<p>两套前端均引用 Vercel Analytics（访问统计）和 Speed Insights（性能监测）脚本。在托管环境启用时，相关脚本可能向 Vercel 发送访问与性能数据。计算代码未主动将表单字段作为统计事件发送，但这不构成对第三方脚本采集或传输行为的保证。请勿填写姓名、身份证号等身份信息。</p>
+<p><a class="source-link" href="https://vercel.com/docs/analytics/privacy-policy">Vercel Analytics 隐私说明</a> · <a class="source-link" href="https://vercel.com/docs/speed-insights/privacy-policy">Speed Insights 隐私说明</a></p></section>
+<footer class="foot"><p>“补足”表示继续按月缴费，不表示政策允许一次性补缴。<br><a href="#scope">适用范围</a> · <a href="#privacy">隐私说明</a></p><p><a href="https://www.shanghai.gov.cn/gwk/search/content/t0035_1443100" target="_blank" rel="noopener noreferrer">上海养老金计发规定</a> · <a href="https://www.gov.cn/" target="_blank" rel="noopener noreferrer">退休政策以官方规定为准</a><br><a href="https://github.com/rothcold/pension-calculator/blob/main/README.md">模型与公式说明（README）</a></p></footer>
 </main>
 <script>
 'use strict';

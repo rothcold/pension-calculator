@@ -7,10 +7,19 @@ pub extern "C" fn allocate(len: u32) -> *mut u8 {
     Box::into_raw(buffer) as *mut u8
 }
 
+/// Releases a buffer allocated by this module.
+///
+/// # Safety
+/// A non-null pointer must identify a live buffer returned by `allocate` or
+/// encoded in an output handle, with its exact allocation length. Release it
+/// only once, with no outstanding references or subsequent use.
 #[no_mangle]
 pub unsafe extern "C" fn release(ptr: *mut u8, len: u32) {
     if !ptr.is_null() {
-        drop(Box::from_raw(std::ptr::slice_from_raw_parts_mut(ptr, len as usize)));
+        drop(Box::from_raw(std::ptr::slice_from_raw_parts_mut(
+            ptr,
+            len as usize,
+        )));
     }
 }
 
@@ -25,6 +34,12 @@ pub extern "C" fn defaults() -> u64 {
     output(serde_json::to_vec(&core::Input::default()).unwrap())
 }
 
+/// Calculates a scenario from a UTF-8 JSON input buffer.
+///
+/// # Safety
+/// For accepted lengths (at most 16 KiB), `ptr` must be non-null and valid
+/// for reads of `len` initialized bytes for the duration of this call. The
+/// caller retains ownership and must not mutate the buffer during the call.
 #[no_mangle]
 pub unsafe extern "C" fn calculate(ptr: *const u8, len: u32) -> u64 {
     if len > 16384 {
