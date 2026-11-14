@@ -6,6 +6,8 @@
 
 结果是达到领取条件后的月养老金情景估算，不是当前可提取余额，也不是社保经办核定待遇。
 
+同域静态说明页位于 <https://pension.rothcold.me/methodology/>，无需 JavaScript 即可阅读当前公式、变量口径、手工复算示例、政策正文与模型边界。政策来源核验日期为 2026-11-14；发现链接失效或口径变化可通过 [GitHub Issues](https://github.com/rothcold/pension-calculator/issues) 反馈。
+
 ## 适用范围
 
 本工具仅估算上海普通企业职工的基础养老金与个人账户养老金，比较停缴、按月补足最低缴费年限和持续缴费等情景。修改基数或费率不等于支持其他地区或参保类型。
@@ -27,7 +29,7 @@ node tests/wasm.cjs
 python3 -m http.server 8080 --bind 127.0.0.1 --directory dist
 ```
 
-打开 <http://127.0.0.1:8080>。Node.js 仅用于可选 WASM 回归测试，Python 仅用于上述静态预览；也可使用现有静态托管服务。不要直接双击 HTML。构建脚本不安装任何依赖工具，Cargo 按两份 `Cargo.lock` 获取 Rust 依赖。当前测试工具链为 Rust 1.99.1 stable；若需要固定编译器复现，可使用对应官方工具链版本。不同 Rust 版本可能产生不同 WASM 字节，但需保持测试结果一致。
+打开 <http://127.0.0.1:8080>，静态说明页路径为 <http://127.0.0.1:8080/methodology/>。Node.js 仅用于可选 WASM 回归测试，Python 仅用于上述静态预览；也可使用现有静态托管服务。不要直接双击 HTML。构建脚本不安装任何依赖工具，Cargo 按两份 `Cargo.lock` 获取 Rust 依赖。当前测试工具链为 Rust 1.99.1 stable；若需要固定编译器复现，可使用对应官方工具链版本。不同 Rust 版本可能产生不同 WASM 字节，但需保持测试结果一致。
 
 `web/index.html` 是静态前端源，`frontend/index.html` 是本地 HTTP 版源；两者交互一致，仅计算调用方式不同。图标以 `frontend/` 为源，构建时同步到 `dist/`。修改公式只改 `src/lib.rs`；WASM wrapper 通过模块路径复用核心。
 
@@ -118,6 +120,8 @@ PENSION_BIND=127.0.0.1:3100 cargo run --release
 - 上海新计发规定（2026 年 8 月 16 日起生效）：<https://rsj.sh.gov.cn/tshbx_17729/20260813/t0035_1443100.html>
 - 同一规定的上海市政府页面：<https://www.shanghai.gov.cn/gwk/search/content/t0035_1443100>
 - 上海 2026 年缴费基数上下限：<https://rsj.sh.gov.cn/tdjjf_17554/20260824/t0035_1443297.html>
+- 全国人大常委会决定及国务院办法（2024 年 9 月 13 日发布，2025 年 1 月 1 日实施）：<https://legalinfo.moj.gov.cn/zhfxfzzx/fzzxyw/202409/t20240913_506025.html>
+- 弹性退休最低缴费年限口径（2025 年 1 月 2 日发布）：<https://chinajob.mohrss.gov.cn/h5/c/2025-01-02/421886.shtml>
 
 不可套用已被替代的旧上海“余月 0.083%”公式。最低年限和渐进退休相关规则请结合最新官方政策核对。
 
@@ -152,6 +156,7 @@ src/main.rs         # 本地 HTTP 服务
 frontend/           # HTTP 版前端及 SVG / PNG / ICO 图标
 wasm/               # 复用 src/lib.rs 的 WASM 包与锁文件
 web/index.html      # 浏览器内计算版前端源
+web/methodology/    # 无 JavaScript 的公式、示例与政策来源页
 dist/               # 构建生成的静态文件，不纳入 Git
 scripts/build-web.sh
 tests/wasm.cjs      # WASM 数值测试，并运行站点测试

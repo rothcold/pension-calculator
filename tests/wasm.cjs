@@ -7,6 +7,8 @@ const fs=require('fs'), assert=require('assert');
  for(const [key,value] of Object.entries({current_age:40,account_balance:0,paid_months:0,monthly_contribution:1000,retirement_age:63,historical_average_index:1,pension_base:12577,wage_growth_rate:0,pension_base_growth_rate:0,account_interest_rate:0}))assert.equal(d[key],value,'Documented example default: '+key);
  Object.assign(d,{current_age:40,account_balance:100000,paid_months:240,monthly_contribution:1006.16,valuation_month:'2026-10'});
  let r=calc(d);assert.equal(r.scenarios[0].monthly_total,3370.2);assert.equal(r.scenarios[0].basic_pension,2515.4);
+ let extraMonth=calc({...d,paid_months:241}).scenarios[0];assert.equal(extraMonth.basic_pension,2525.9);assert.equal(extraMonth.account_pension,854.8);assert.equal(extraMonth.monthly_total,3380.7);
+ let schedule2030=calc({...d,current_age:60,paid_months:180,retirement_month:'2030-10'});assert.equal(schedule2030.minimum_months_at_retirement,186);assert.equal(schedule2030.scenarios[0].missing_months,6);assert.equal(schedule2030.scenarios[0].monthly_total,0);
  let recovery=r.scenarios[0].simplified_recovery;assert.equal(recovery.payment_months,30);assert.equal(recovery.age_years,65);assert.equal(recovery.age_months,6);assert.equal(r.scenarios[0].personal_payback,null);
  let five=calc({...d,account_interest_rate:0.05,past_personal_contributions:80000,future_personal_monthly_cost:2000}).scenarios[3];assert.equal(five.simplified_recovery.cost,160369.6);assert.equal(five.personal_payback.cost,200000);
  r=calc({...d,paid_months:120});assert.equal(r.scenarios[0].simplified_recovery,null);assert.equal(r.scenarios[0].monthly_total,0);assert.equal(r.scenarios[0].missing_months,120);
