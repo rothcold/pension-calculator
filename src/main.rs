@@ -15,6 +15,13 @@ async fn methodology() -> impl IntoResponse {
     Html(include_str!("../web/methodology/index.html"))
 }
 
+fn css(stylesheet: &'static str) -> impl IntoResponse {
+    (
+        [(header::CONTENT_TYPE, "text/css; charset=utf-8")],
+        stylesheet,
+    )
+}
+
 async fn defaults() -> Json<Input> {
     Json(Input::default())
 }
@@ -62,6 +69,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     include_bytes!("../frontend/favicon.ico").as_slice(),
                 )
             }),
+        )
+        .route(
+            "/styles/alloy.css",
+            get(|| async { css(include_str!("../web/styles/alloy.css")) }),
+        )
+        .route(
+            "/styles/teal.css",
+            get(|| async { css(include_str!("../web/styles/teal.css")) }),
         )
         .route("/api/defaults", get(defaults))
         .route("/api/calculate", post(compute))

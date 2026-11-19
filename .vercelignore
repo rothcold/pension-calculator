@@ -8,4 +8,5 @@ site/
 *.tar.gz
 .DS_Store
 /dist/
+/artifacts/
 /.vercel/
