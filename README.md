@@ -33,6 +33,8 @@ python3 -m http.server 8080 --bind 127.0.0.1 --directory dist
 
 `web/index.html` 是静态前端源，`frontend/index.html` 是本地 HTTP 版源；两者交互一致，仅计算调用方式不同。图标以 `frontend/` 为源，构建时同步到 `dist/`。修改公式只改 `src/lib.rs`；WASM wrapper 通过模块路径复用核心。
 
+两版计算器及说明页共用 `web/styles/` 的本地样式。`alloy.css` 只含固定版本 Alloy CSS 的控件、焦点和布局规则，来源、行号、校验和与许可见 [Alloy 清单](web/styles/ALLOY.md)。主题与响应式布局只在 `teal.css` 修改。构建时复制这两个 CSS 文件，HTTP 服务使用相同文件；不从 CDN 加载样式或字体。前端未配置 TypeScript 或单独的样式 / JavaScript linter，站点回归检查随 `node tests/wasm.cjs` 运行。
+
 本仓库不包含任何托管平台账户配置、访问凭据或个人真实输入。静态文件本身不提供登录或访问控制，请按自己的托管环境配置隐私边界。
 
 ## Vercel 构建注意事项

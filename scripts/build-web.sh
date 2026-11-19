@@ -8,5 +8,7 @@ cp wasm/target/wasm32-unknown-unknown/release/pension_browser.wasm dist/
 cp web/index.html web/robots.txt web/sitemap.xml dist/
 mkdir -p dist/methodology
 cp web/methodology/index.html dist/methodology/
+mkdir -p dist/styles
+cp web/styles/alloy.css web/styles/teal.css dist/styles/
 cp frontend/favicon.svg frontend/favicon-32.png frontend/favicon.ico dist/
 echo "Built dist/. Serve this directory over HTTP; do not open HTML as file://."

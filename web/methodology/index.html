@@ -14,14 +14,27 @@
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg">
-<style>
-:root{--ink:#17382f;--muted:#63766e;--line:#dce5de;--paper:#f6f8f3;--accent:#237458;--soft:#e7f1e9;--warn:#85602b}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.75}.wrap{max-width:960px;margin:auto;padding:45px 28px 64px}.eyebrow{font-size:12px;letter-spacing:.16em;font-weight:750;color:var(--accent)}header{margin-bottom:25px}h1{font-size:38px;letter-spacing:-1.5px;line-height:1.3;margin:9px 0 12px}h2{font-size:22px;margin:0 0 15px}h3{font-size:17px;margin:24px 0 9px}p{margin:0 0 12px}.subtitle,.muted{color:var(--muted)}a{color:var(--accent);text-underline-offset:3px}.nav{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}.nav a{font-size:13px;font-weight:700}.notice{border-left:3px solid #c6a269;background:#f7f0e3;padding:13px 17px;color:#6d5634;border-radius:0 9px 9px 0;margin-bottom:23px}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:26px;margin-bottom:23px;box-shadow:0 3px 15px #18392a03}.formula{background:#f7f9f5;border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin:11px 0;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;overflow-wrap:anywhere}.formula strong{font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:12px;padding:17px;background:#fcfdfb}.card h3{margin:0 0 8px}.example{border-left:3px solid #9fc2b5;padding-left:17px;margin:22px 0}.example h3{margin-top:0}.example ol{margin:7px 0;padding-left:22px}.example .result{font-weight:750;color:var(--accent)}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:var(--muted);font-weight:650;background:#f7f9f5}th,td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}ul{padding-left:21px;margin:8px 0}li{margin:6px 0}.table-wrap{overflow:auto}.source-title{min-width:180px}.fine{font-size:12px;color:var(--muted)}footer{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:24px;margin-top:28px}footer p{max-width:620px}@media(max-width:680px){.wrap{padding:28px 17px 48px}h1{font-size:29px}.panel{padding:19px}.grid{grid-template-columns:1fr}.table-wrap{overflow:visible}table,tbody,tr,td{display:block}thead{display:none}tr{border:1px solid var(--line);border-radius:10px;margin:0 0 13px;padding:10px 12px;background:#fcfdfb}td{border:0;padding:5px 0;min-width:0}td::before{content:attr(data-label) "：";font-weight:700;color:var(--muted)}.source-title{min-width:0}footer{display:block}}@media print{body{background:#fff}.wrap{padding:0;max-width:none}.panel{border:0;box-shadow:none;padding:13px 0}.nav,footer{display:none}.table-wrap{overflow:visible}a{color:inherit;text-decoration:none}}
-</style>
+<meta name="theme-color" content="#f6f5ef">
+<link rel="stylesheet" href="/styles/alloy.css">
+<link rel="stylesheet" href="/styles/teal.css">
 </head>
-<body><main class="wrap">
-<header><div class="eyebrow">METHOD / SOURCES / EXAMPLES</div><h1>计算方法、示例与政策来源</h1><p class="subtitle">这是一页无需 JavaScript 即可阅读的静态说明，记录当前代码实际使用的公式、可修改参数和政策边界。内容核验日期：2026-11-14。</p><nav class="nav" aria-label="页面导航"><a href="/">返回计算器</a><a href="#examples">手工复算示例</a><a href="#sources">政策来源</a><a href="https://github.com/rothcold/pension-calculator/issues">维护与反馈</a></nav></header>
+<body>
+<a class="skip-link" href="#main">跳至主要内容</a>
+<header class="mast"><div class="container-1320 mast-inner">
+  <span class="brand"><img src="/favicon.svg" width="28" height="28" alt="">养老金测算</span>
+  <nav aria-label="站点导航"><a href="/">计算器</a><a href="/methodology/" aria-current="page">计算方法</a></nav>
+</div></header>
+<main id="main" class="container-1320" tabindex="-1">
+<div class="intro"><div><h1>计算方法、示例与政策来源</h1><p class="subtitle">这是一页无需 JavaScript 即可阅读的静态说明，记录当前代码实际使用的公式、可修改参数和政策边界。</p></div><span class="badge">内容核验日期：2026-11-14</span></div>
 <div class="notice"><strong>先看结论：</strong>结果是条件性情景估算，不是社保经办机构的待遇认定，也不证明领取资格。遇到视同缴费、过渡性养老金、特殊工种、跨地区关系转移、灵活就业或非整周岁计发月数等情况，应以经办核定为准。</div>
 
+<div class="reader"><nav class="contents" aria-label="本页目录"><strong>本页目录</strong>
+<a href="#formula"><span>01</span>养老金公式</a>
+<a href="#variables"><span>02</span>参数与假设</a>
+<a href="#examples"><span>03</span>手工复算示例</a>
+<a href="#boundaries"><span>04</span>回本与时间边界</a>
+<a href="#sources"><span>05</span>政策来源</a>
+<a href="/">← 返回计算器</a></nav><div class="chapters">
 <section class="panel" id="formula" aria-labelledby="formula-title"><h2 id="formula-title">当前实现的两项养老金公式</h2>
 <p>计算器只估算上海普通企业职工模型中的<strong>基础养老金</strong>和<strong>个人账户养老金</strong>。JavaScript 只负责表单与展示；数值由同一份 Rust 核心计算，静态站编译为 WebAssembly。</p>
 <div class="formula"><strong>基础养老金</strong> = 向上进位到角〔B × (1 + I) ÷ 2 × Y × 1%〕</div>
@@ -84,5 +97,6 @@
 </tbody></table></div>
 <p class="fine">政策与数据会更新。若链接失效、口径变更或示例与结果不一致，请在 <a href="https://github.com/rothcold/pension-calculator/issues">GitHub Issues</a> 反馈，并附适用地区、参保类型、政策正文与发布日期；不要提交身份证号、完整权益记录等个人敏感信息。</p></section>
 
-<footer><p>本说明页不依赖 JavaScript。计算器主页面需要 JavaScript 和 WebAssembly 才能生成结果；关闭 JavaScript 时仍可阅读这里的公式、示例和来源。</p><p><a href="/">返回计算器</a> · <a href="https://github.com/rothcold/pension-calculator">查看源码</a> · <a href="https://github.com/rothcold/pension-calculator/issues">维护与反馈</a></p></footer>
+</div></div>
+<footer class="foot"><p>本说明页不依赖 JavaScript。计算器需要 JavaScript 才能生成结果：静态版调用浏览器内的 WebAssembly，HTTP 版调用当前站点的 Rust 服务；关闭 JavaScript 时仍可阅读这里的公式、示例和来源。</p><p><a href="/">返回计算器</a> · <a href="https://github.com/rothcold/pension-calculator">查看源码</a> · <a href="https://github.com/rothcold/pension-calculator/issues">维护与反馈</a></p></footer>
 </main></body></html>
