@@ -78,6 +78,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "/styles/teal.css",
             get(|| async { css(include_str!("../web/styles/teal.css")) }),
         )
+        .route(
+            "/theme.js",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/javascript; charset=utf-8")],
+                    include_str!("../web/theme.js"),
+                )
+            }),
+        )
         .route("/api/defaults", get(defaults))
         .route("/api/calculate", post(compute))
         .route("/health", get(|| async { "ok" }))
