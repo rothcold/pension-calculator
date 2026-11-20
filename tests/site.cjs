@@ -108,6 +108,8 @@ for(const file of ['favicon.svg','favicon-32.png','favicon.ico'])assert(fs.readF
 // Both transports and the script-free reader must ship the same offline styles.
 const styles=['/styles/alloy.css','/styles/teal.css'];
 for(const html of [http,web,methodology]){
+ assert(html.includes('<meta name="color-scheme" content="light dark">'));
+ assert.deepEqual([...html.matchAll(/<meta name="theme-color" media="\(prefers-color-scheme: (\w+)\)" content="(#[\da-f]+)">/g)].map(m=>m.slice(1)),[['light','#ffffff'],['dark','#0c1010']]);
  assert.deepEqual([...html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)].map(m=>m[1]),styles);
  assert(html.includes('class="skip-link" href="#main"')&&html.includes('<main id="main"'));
 }
@@ -119,7 +121,7 @@ for(const path of styles){
 const alloy=read('web/styles/alloy.css'), manifest=read('web/styles/ALLOY.md');
 assert(manifest.includes('5232d781cac670d58f21b7f327c0eaf341e2ec71'));
 assert.equal(require('crypto').createHash('sha256').update(alloy).digest('hex'),'7928005dcb970618316095d18020a9c378fea4ca988e6afc6e57ea5379e605e0','Review Alloy excerpts and license before updating');
-assert(read('web/styles/teal.css').includes('--color-primary-1: #006960;'));
+assert(read('web/styles/teal.css').includes('--brand-seed: #008080;'));
 for(const input of web.matchAll(/<input\b([^>]*)>/g)){
  const attrs=input[1], id=attrs.match(/\bid="([^"]+)"/)[1];
  assert(attrs.includes('name="'+id+'"'),id+': preserve form contract');
