@@ -21,6 +21,7 @@
   --display: Georgia, "Songti SC", "Noto Serif CJK SC", SimSun, serif;
 }
 body { font-size: 16px; line-height: 1.65; overflow-wrap: anywhere; }
+body { background-color: #fff; }
 h1, h2, h3, legend { line-height: 1.35; }
 h1 { font: 700 clamp(32px, 3.6vw, 52px)/1.22 var(--display); text-wrap: balance; }
 h2 { font-size: clamp(21px, 2vw, 26px); }
