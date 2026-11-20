@@ -5,7 +5,7 @@ export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$(pwd)=. --remap-path-prefi
 cargo build --locked --manifest-path wasm/Cargo.toml --target wasm32-unknown-unknown --release
 mkdir -p dist
 cp wasm/target/wasm32-unknown-unknown/release/pension_browser.wasm dist/
-cp web/index.html web/robots.txt web/sitemap.xml dist/
+cp web/index.html web/theme.js web/robots.txt web/sitemap.xml dist/
 mkdir -p dist/methodology
 cp web/methodology/index.html dist/methodology/
 mkdir -p dist/styles

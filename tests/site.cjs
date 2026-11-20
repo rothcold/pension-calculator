@@ -63,8 +63,8 @@ for(const [path,html] of [['web/index.html',web],['frontend/index.html',http],['
  for(const script of ['insights','speed-insights'])assert(head.includes('src="/_vercel/'+script+'/script.js"'));
  assert(!/无第三方脚本|不加载第三方脚本|无埋点|没有分析埋点|不接第三方分析服务|不会保存或上传至第三方|账户输入不上传/.test(html));
 }
-assert.equal(checkInlineScripts(methodology,'web/methodology/index.html'),0,'Methodology must not require JavaScript');
-assert(!methodology.includes('<script'), 'Methodology contains no scripts');
+assert.deepEqual([...methodology.matchAll(/<script\b[^>]*>/g)].map(m=>m[0]),['<script src="/theme.js">'],'Only the optional theme control uses script on the reader');
+for(const id of ['formula','variables','examples','boundaries','sources'])section(methodology,id);
 assert(methodology.includes('<link rel="canonical" href="'+origin+'methodology/">'));
 for(const text of [
  '基础养老金','个人账户养老金','保留 4 位小数','向上进位到角',
@@ -105,12 +105,67 @@ const sitemap=read('dist/sitemap.xml');
 assert(sitemap.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'));
 assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]),[origin,origin+'methodology/']);
 for(const file of ['favicon.svg','favicon-32.png','favicon.ico'])assert(fs.readFileSync('dist/'+file).equals(fs.readFileSync('frontend/'+file)));
-// Both transports and the script-free reader must ship the same offline styles.
+// Both transports and the static reader ship the same pre-paint initializer and local styles.
+const theme=read('web/theme.js');
+assert.equal(read('dist/theme.js'),theme);
+assert(server.includes('"/theme.js"') && server.includes('include_str!("../web/theme.js")'));
 const styles=['/styles/alloy.css','/styles/teal.css'];
+const palette=read('web/styles/teal.css');
+const fallback=palette.split('@supports not (color: light-dark(white, black)) {')[1].split('/* Without JS')[0];
+for(const [,token,value] of palette.matchAll(/(--[\w-]+): light-dark\((#[\da-f]+), #[\da-f]+\);/g))
+ assert(fallback.includes(token+': '+value+';'),token+': keep light fallback in sync');
+
 for(const html of [http,web,methodology]){
+ const head=html.split('</head>')[0], script='<script src="/theme.js"></script>';
+ assert.equal(head.split(script).length,2);
+ assert(head.lastIndexOf('name="theme-color"')<head.indexOf(script) && head.indexOf(script)<head.indexOf('<link rel="stylesheet"'));
+ assert.equal(html.match(/id="theme-toggle"/g).length,1);
+ assert(html.includes('<button type="button" id="theme-toggle" hidden></button></nav>'));
+ assert(html.includes('<meta name="color-scheme" content="light dark">'));
+ assert.deepEqual([...html.matchAll(/<meta name="theme-color" media="\(prefers-color-scheme: (\w+)\)" content="(#[\da-f]+)">/g)].map(m=>m.slice(1)),[['light','#ffffff'],['dark','#0c1010']]);
  assert.deepEqual([...html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)].map(m=>m[1]),styles);
  assert(html.includes('class="skip-link" href="#main"')&&html.includes('<main id="main"'));
 }
+// Exercise the actual head script before and after the button is available.
+function checkTheme(initial, blocked, supportsColor=true){
+ const events={}, on=(type,listener)=>events[type]=listener;
+ const root={dataset:{}}, scheme={}, light={content:'#ffffff',removeAttribute(){}}, dark={content:'#0c1010',remove(){}};
+ const button={hidden:true,addEventListener:on,setAttribute(name,value){this[name]=value;}};
+ const system={matches:false,addEventListener:on}, writes=[];
+ const storage={getItem:()=>initial,setItem(key,value){if(blocked)throw Error('quota'); writes.push([key,value]);}};
+ const document={documentElement:root,querySelector:()=>scheme,querySelectorAll:()=>[light,dark],getElementById:()=>button,addEventListener:on};
+ const window={CSS:{supports:()=>supportsColor},get localStorage(){if(blocked==='read')throw Error('denied'); return storage;},addEventListener:on};
+ vm.runInNewContext(theme,{document,window,matchMedia:()=>system});
+ if(!supportsColor){
+  assert.equal(scheme.content,'light');
+  assert.equal(light.content,'#ffffff');
+  assert.equal(button.hidden,true);
+  assert.deepEqual(events,{});
+  return;
+ }
+ function check(expected){
+  assert.equal(root.dataset.theme,expected);
+  assert.equal(scheme.content,expected);
+  assert.equal(light.content,expected==='dark'?'#0c1010':'#ffffff');
+  if(!button.hidden){
+   assert.equal(button.textContent,expected==='dark'?'☀️':'🌙');
+   assert.equal(button['aria-label'],expected==='dark'?'切换到浅色模式':'切换到深色模式');
+  }
+ }
+ const saved=initial==='dark';
+ check(saved?'dark':'light'); // Pre-paint, including saved dark on a light OS.
+ events.DOMContentLoaded(); assert.equal(button.hidden,false);
+ system.matches=true; events.change(); check(initial==='light'?'light':'dark');
+ system.matches=false; events.change(); check(saved?'dark':'light');
+ assert.deepEqual(writes,[],'System preference must not be persisted');
+ const selected=saved?'light':'dark';
+ events.click(); check(selected);
+ system.matches=true; events.change(); system.matches=false; events.change(); check(selected);
+ events.click(); check(saved?'dark':'light');
+ assert.deepEqual(writes,blocked?[]:[['pension-theme',selected],['pension-theme',saved?'dark':'light']]);
+}
+checkTheme(null); checkTheme('light'); checkTheme('dark'); checkTheme('invalid'); checkTheme(null,'read'); checkTheme(null,'write'); checkTheme('dark',null,false);
+console.log('Theme startup, system changes, action labels, explicit choice and storage failures: PASS');
 for(const path of styles){
  assert.equal(read('dist'+path),read('web'+path),path+': stale stylesheet');
  assert(server.includes('"'+path+'"'),path+': missing HTTP route');
@@ -119,7 +174,7 @@ for(const path of styles){
 const alloy=read('web/styles/alloy.css'), manifest=read('web/styles/ALLOY.md');
 assert(manifest.includes('5232d781cac670d58f21b7f327c0eaf341e2ec71'));
 assert.equal(require('crypto').createHash('sha256').update(alloy).digest('hex'),'7928005dcb970618316095d18020a9c378fea4ca988e6afc6e57ea5379e605e0','Review Alloy excerpts and license before updating');
-assert(read('web/styles/teal.css').includes('--color-primary-1: #006960;'));
+assert(read('web/styles/teal.css').includes('--brand-seed: #008080;'));
 for(const input of web.matchAll(/<input\b([^>]*)>/g)){
  const attrs=input[1], id=attrs.match(/\bid="([^"]+)"/)[1];
  assert(attrs.includes('name="'+id+'"'),id+': preserve form contract');
